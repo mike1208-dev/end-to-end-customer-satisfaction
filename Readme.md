@@ -59,11 +59,3 @@ This project is an implementation of MLOps for a customer satisfaction predictio
 ## Contributing
 
 If you'd like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
-
----
-
-Developed by [MGJillaniMughal](https://github.com/MGJillaniMughal).
