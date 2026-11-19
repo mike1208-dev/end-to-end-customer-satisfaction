@@ -13,8 +13,6 @@ from sklearn.base import RegressorMixin
 from zenml import step
 from zenml.client import Client
 
-from .config import ModelNameConfig
-
 experiment_tracker = Client().active_stack.experiment_tracker
 
 
@@ -24,7 +22,8 @@ def train_model(
     x_test: pd.DataFrame,
     y_train: pd.Series,
     y_test: pd.Series,
-    config: ModelNameConfig,
+    model_name: str = "lightgbm",
+    fine_tuning: bool = False,
 ) -> RegressorMixin:
     """
     Args:
@@ -32,6 +31,8 @@ def train_model(
         x_test: pd.DataFrame
         y_train: pd.Series
         y_test: pd.Series
+        model_name: one of "lightgbm", "randomforest", "xgboost", "linear_regression"
+        fine_tuning: if True, tune hyperparameters with Optuna before training
     Returns:
         model: RegressorMixin
     """
@@ -39,16 +40,16 @@ def train_model(
         model = None
         tuner = None
 
-        if config.model_name == "lightgbm":
+        if model_name == "lightgbm":
             mlflow.lightgbm.autolog()
             model = LightGBMModel()
-        elif config.model_name == "randomforest":
+        elif model_name == "randomforest":
             mlflow.sklearn.autolog()
             model = RandomForestModel()
-        elif config.model_name == "xgboost":
+        elif model_name == "xgboost":
             mlflow.xgboost.autolog()
             model = XGBoostModel()
-        elif config.model_name == "linear_regression":
+        elif model_name == "linear_regression":
             mlflow.sklearn.autolog()
             model = LinearRegressionModel()
         else:
@@ -56,7 +57,7 @@ def train_model(
 
         tuner = HyperparameterTuner(model, x_train, y_train, x_test, y_test)
 
-        if config.fine_tuning:
+        if fine_tuning:
             best_params = tuner.optimize()
             trained_model = model.train(x_train, y_train, **best_params)
         else:
