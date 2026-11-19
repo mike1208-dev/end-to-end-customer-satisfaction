@@ -8,6 +8,6 @@ if __name__ == "__main__":
         "Now run \n "
         f"    mlflow ui --backend-store-uri '{get_tracking_uri()}'\n"
         "To inspect your experiment runs within the mlflow UI.\n"
-        "You can find your runs tracked within the `mlflow_example_pipeline`"
-        "experiment. Here you'll also be able to compare the two runs.)"
+        "Your runs are tracked in the `train_pipeline` experiment, where you can "
+        "compare runs side by side."
     )
