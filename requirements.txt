@@ -1,12 +1,24 @@
-catboost
-joblib
-lightgbm
-optuna
-streamlit
-xgboost
-markupsafe
-zenml
-numpy
-pandas
-scikit-learn
-mlflow
+# Python 3.11 — install with:  pip install -r requirements.txt
+# Exact versions of every installed package (incl. sub-dependencies): requirements-lock.txt
+
+# Pipelines, experiment tracking, model registry
+zenml[local]==0.98.1
+mlflow==3.18.0
+skops==0.16.0
+
+# Data and models
+pandas==3.1.1
+numpy==2.4.6
+scikit-learn==1.9.1
+lightgbm==4.7.0
+xgboost==3.2.0
+optuna==5.1.0
+
+# Streamlit app and CLI
+streamlit==1.67.0
+pillow==13.0.0
+click==8.5.0
+rich==15.0.0
+
+# Tests
+pytest==9.2.0

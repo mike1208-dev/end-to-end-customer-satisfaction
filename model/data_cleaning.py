@@ -37,12 +37,8 @@ class DataPreprocessStrategy(DataStrategy):
                 ],
                 axis=1,
             )
-            data["product_weight_g"].fillna(data["product_weight_g"].median(), inplace=True)
-            data["product_length_cm"].fillna(data["product_length_cm"].median(), inplace=True)
-            data["product_height_cm"].fillna(data["product_height_cm"].median(), inplace=True)
-            data["product_width_cm"].fillna(data["product_width_cm"].median(), inplace=True)
-            # write "No review" in review_comment_message column
-            data["review_comment_message"].fillna("No review", inplace=True)
+            for col in ["product_weight_g", "product_length_cm", "product_height_cm", "product_width_cm"]:
+                data[col] = data[col].fillna(data[col].median())
 
             data = data.select_dtypes(include=[np.number])
             cols_to_drop = ["customer_zip_code_prefix", "order_item_id"]

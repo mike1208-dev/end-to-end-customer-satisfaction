@@ -1,11 +1,7 @@
-import json
-
-import numpy as np
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from pipelines.deployment_pipeline import prediction_service_loader
-from run_deployment import main
+from pipelines.model_registry import load_production_model
 
 
 def main():
@@ -62,16 +58,11 @@ def main():
     product_width_cm = st.number_input("Product width (CMs)")
 
     if st.button("Predict"):
-        service = prediction_service_loader(
-        pipeline_name="continuous_deployment_pipeline",
-        pipeline_step_name="mlflow_model_deployer_step",
-        running=False,
-        )
-        if service is None:
-            st.write(
-                "No service could be found. The pipeline will be run first to create a service."
-            )
-            run_main()
+        try:
+            model = load_production_model()
+        except Exception:
+            st.error("No production model found. Run `python run_deployment.py --config deploy` first.")
+            st.stop()
 
         df = pd.DataFrame(
             {
@@ -88,15 +79,9 @@ def main():
                 "product_height_cm": [product_height_cm],
                 "product_width_cm": [product_width_cm],
             }
-        )
-        json_list = json.loads(json.dumps(list(df.T.to_dict().values())))
-        data = np.array(json_list)
-        pred = service.predict(data)
-        st.success(
-            "Your Customer Satisfactory rate(range between 0 - 5) with given product details is :-{}".format(
-                pred
-            )
-        )
+        ).astype("float64")
+        pred = model.predict(df)
+        st.success(f"Predicted customer satisfaction score (1-5) for these product details: {float(pred[0]):.2f}")
     if st.button("Results"):
         st.write(
             "We have experimented with two ensemble and tree based models and compared the performance of each model. The results are as follows:"
